@@ -1,10 +1,16 @@
-const Item = ({ name, quantity, category }) => {
-  return (
-    <li className="bg-blue-600 p-1 mb-4">
-      <h3 className="text-lg font-bold">{name}</h3>
-      <p className="text-white-600">Buy {quantity} in {category}</p>
-    </li>
-  );
-};
+import ItemList from "./item-list.js"
 
-export default Item;
+export default function Item({name, quantity, category}){
+    return (
+      <main>
+        <div className="">
+          <ul className="p-2.5 ml-5 pt2 border-2 mb-3 w-96 h-20  bg-blue-800">
+            <li className="font-bold text-xl">{name}</li>
+            <li className="">
+              But {quantity} in {category}
+            </li>
+          </ul>
+        </div>
+      </main>
+    );
+}
