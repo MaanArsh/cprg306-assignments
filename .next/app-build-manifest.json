@@ -1,10 +1,5 @@
 {
   "pages": {
-    "/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/page.js"
-    ],
     "/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -16,10 +11,15 @@
       "static/chunks/main-app.js",
       "static/chunks/app/week-6/page.js"
     ],
-    "/week-5/page": [
+    "/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/week-5/page.js"
+      "static/chunks/app/page.js"
+    ],
+    "/week-7/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/week-7/page.js"
     ]
   }
 }
