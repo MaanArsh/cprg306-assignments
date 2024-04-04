@@ -1,45 +1,89 @@
 "use client";
+import { useState, useEffect } from "react";
+import ItemList from "./item-list";
+import NewItem from "./new-item";
+import MealIdeas from "./meal-ideas";
+import { useUserAuth } from "../_utils/auth-context";
+import Link from "next/link";
+import { getItems, addItem, deleteItem } from "../_services/shopping-list-service";
 
-import { useState } from "react";
-import ItemList from "./item-list.js";
-import NewItem from "./new-item.js";
-import MealIdeas from "./meal-ideas.js";
+function Page() {
+  const [items, setItems] = useState([]);
+  const [selectedItemName, setSelectedItemName] = useState("");
+  const { user, firebaseSignOut } = useUserAuth();
 
-export default function Page() {
-  const [items, setItems] = useState(ItemData);
-  const [selectedItemName, setSelectedItemName] = useState(null);
+  async function loadItems() {
+    if (user) {
+      const items = await getItems(user.uid);
+      setItems(items);
+    }
+  }
 
-  const handleAddItem = (newItem) => {
-    setItems((prevItems) => [newItem, ...prevItems]);
-  };
+  useEffect(() => {
+    loadItems();
+  }, [user?.uid]);
 
-  const handleItemSelect = (itemName) => {
-    if (typeof itemName === "string") {
-      const ItemNameToClean = itemName
-        .replace(
-          /,.*|[\u2700-\u27BF]|[\uE000-\uF8FF]|�[�-�]|�[�-�]|[\u2011-\u26FF]|�[�-�]|\p{Emoji}/gu,
-          ""
-        )
-        .trim();
-      setSelectedItemName(ItemNameToClean);
-    } else {
-      console.error("Invalid itemName:", itemName);
+  const handleAddItem = async (itemData) => {
+    if (user) {
+      const newItem = { ...itemData, quantity: parseInt(itemData.quantity) }; // Ensure data is correctly formatted
+      const itemId = await addItem(user.uid, newItem);
+      const updatedItem = { ...newItem, id: itemId }; // Include the new Firestore document ID
+      setItems((prevItems) => [...prevItems, updatedItem]);
     }
   };
 
-  return (
-    <main className="bg-slate-950">
-      <h1 className="text-3xl font-bold m-2">Shopping List</h1>
-      <div className="flex">
-        <div className="flex-1 max-w-sm m-2">
-          <NewItem onAddItem={handleAddItem} />
-          <ItemList items={items} onItemSelect={handleItemSelect} />
+  async function handleDeleteItem(itemId) {
+    if (user) {
+      try {
+        await deleteItem(user.uid, itemId);
+  
+        setItems(currentItems => currentItems.filter(item => item.id !== itemId));
+      } catch (error) {
+        console.error("Failed to delete item:", error);
+      }
+    }
+  }
+
+  const handleItemSelect = (itemName) => {
+    let cleanedItemName = itemName.split(",")[0].trim();
+    cleanedItemName = cleanedItemName.replace(
+      /([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g,
+      ""
+    );
+    setSelectedItemName(cleanedItemName);
+  };
+
+  if (user) {
+    return (
+      <main className="bg-slate-950 text-white m-2 p-2 flex">
+        <div className="max-w-md w-full">
+          <h1 className="text-3xl font-bold mb-4">Shopping List</h1>
+
+          <button
+            onClick={firebaseSignOut}
+            className="border-2 border-sky-500 rounded p-1 px-3 hover:bg-sky-500"
+          >
+            Sign out
+          </button>
+          <NewItem onAddItem={handleAddItem}></NewItem>
+          <ItemList items={items} onItemSelect={handleItemSelect} onDelete={handleDeleteItem}></ItemList>
         </div>
-        <div className="flex-1 max-w-sm m-2 p-3">
-          <h3 className="text-xl font-bold">Meal Ideas</h3>
+
+        <div className="flex-1 max-w-sm m-2 mt-16">
           <MealIdeas ingredient={selectedItemName} />
         </div>
+      </main>
+    );
+  } else {
+    return (
+      <div>
+        <p>You need to be signed in to access the Shopping List.</p>
+        <p className="hover:underline">
+          <Link href="/week-10">Sign in on this page </Link>
+        </p>
       </div>
-    </main>
-  );
+    );
+  }
 }
+
+export default Page;

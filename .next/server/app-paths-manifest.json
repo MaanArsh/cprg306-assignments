@@ -1,9 +1,5 @@
 {
-  "/week-3/page": "app/week-3/page.js",
-  "/week-7/page": "app/week-7/page.js",
-  "/week-5/page": "app/week-5/page.js",
-  "/week-6/page": "app/week-6/page.js",
-  "/week-8/shopping-list/page": "app/week-8/shopping-list/page.js",
-  "/week-8/page": "app/week-8/page.js",
-  "/week-10/page": "app/week-10/page.js"
+  "/page": "app/page.js",
+  "/week-10/page": "app/week-10/page.js",
+  "/week-10/shopping-list/page": "app/week-10/shopping-list/page.js"
 }

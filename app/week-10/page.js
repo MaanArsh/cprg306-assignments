@@ -30,7 +30,7 @@ const HomePage = () => {
           <button onClick={handleSignOut} className="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
             Logout
           </button>
-          <Link href="/week-8/shopping-list">
+          <Link href="/week-10/shopping-list">
             <div className="block mt-4 text-blue-500 hover:underline font-bold">Go to the Shopping List</div>
           </Link>
         </div>
